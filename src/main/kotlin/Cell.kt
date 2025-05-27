@@ -1,17 +1,17 @@
 class Cell(data: Array<String>) {
     // Class properties for each column in the CSV
-    private var oem: String? = null
-    private var model: String? = null
-    private var launchAnnounced: Int? = null
-    private var launchStatus: String? = null
-    private var bodyDimensions: String? = null
-    private var bodyWeight: Float? = null
-    private var bodySim: String? = null
-    private var displayType: String? = null
-    private var displaySize: Float? = null
-    private var displayResolution: String? = null
-    private var featSensors: String? = null
-    private var platformOs: String? = null
+    var oem: String? = null
+    var model: String? = null
+    var launchAnnounced: Int? = null
+    var launchStatus: String? = null
+    var bodyDimensions: String? = null
+    var bodyWeight: Float? = null
+    var bodySim: String? = null
+    var displayType: String? = null
+    var displaySize: Float? = null
+    var displayResolution: String? = null
+    var featSensors: String? = null
+    var platformOs: String? = null
 
     // Initialization block that cleans and assigns values from the CSV row
     init {
@@ -35,7 +35,7 @@ class Cell(data: Array<String>) {
     }
 
     // Extracts a 4-digit year from a string
-    private fun extractYear(input: String?): Int? {
+    fun extractYear(input: String?): Int? {
         val yearRegex = Regex("""\b(\d{4})\b""")
         return yearRegex.find(input.orEmpty())?.groupValues?.get(1)?.toIntOrNull()
     }
@@ -68,7 +68,7 @@ class Cell(data: Array<String>) {
     }
 
     // Extracts release year from launch status if present
-    private fun extractReleaseYear(): Int? {
+    fun extractReleaseYear(): Int? {
         val regex = Regex("""Released\s+(\d{4})""", RegexOption.IGNORE_CASE)
         return regex.find(this.launchStatus ?: "")?.groupValues?.get(1)?.toIntOrNull()
     }
@@ -79,5 +79,63 @@ class Cell(data: Array<String>) {
                 "Launch announced: $launchAnnounced, " +
                 "Body weight: $bodyWeight g, " +
                 "Display size: $displaySize\""
+    }
+
+    // Static-like methods in companion object
+
+    companion object {
+        // Gets the avg weight of cells
+        fun meanWeight(cells: List<Cell>): Float? {
+            val weights = cells.mapNotNull { it.bodyWeight }
+            return if (weights.isNotEmpty()) weights.average().toFloat() else null
+        }
+
+        // Gets the median of weight
+        fun medianWeight(cells: List<Cell>): Float? {
+            val weights = cells.mapNotNull { it.bodyWeight }.sorted()
+            val size = weights.size
+            return when {
+                size == 0 -> null
+                size % 2 == 1 -> weights[size/2]
+                else -> (weights[size / 2 - 1] + weights[size / 2]) / 2
+            }
+        }
+
+        //
+        fun stdDevWeight(cells: List<Cell>): Double? {
+            val weight = cells.mapNotNull { it.bodyWeight }
+            val mean = weight.average()
+            val variance = weight.map { (it - mean) * (it - mean) }.average()
+            return if (weight.isNotEmpty()) kotlin.math.sqrt(variance) else null
+        }
+
+        //
+        fun modeStatus(cells: List<Cell>): String? {
+            return cells.mapNotNull { it.launchStatus }
+                    .groupingBy { it }
+                    .eachCount()
+                    .maxByOrNull { it.value }
+                    ?.key
+        }
+
+        // Gets unique values
+        fun uniqueValuesFor(column: String, cells: List<Cell>): Set<String?> {
+            return when (column.lowercase()){
+                "oem" -> cells.map { it.oem }.toSet()
+                "model" -> cells.map { it.model }.toSet()
+                "status" -> cells.map { it.launchStatus }.toSet()
+                "platform" -> cells.map { it.platformOs }.toSet()
+                else -> emptySet()
+            }
+        }
+
+        //
+        fun addToList(cells: MutableList<Cell>, cell: Cell) {
+            cells.add(cell)
+        }
+
+        fun deleteByModel(cells: MutableList<Cell>, model: String): Boolean {
+            return cells.removeIf { it.model.equals(model, ignoreCase = true) }
+        }
     }
 }

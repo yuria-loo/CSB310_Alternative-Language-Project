@@ -9,6 +9,38 @@ fun main() {
     cells.take(5).forEachIndexed { index, cell ->
         println("Phone #${index + 1}: $cell")
     }
+
+    // Q1: OEM with the highest average weight
+    val oemWithHighestAvgWeight = cells
+            .filter { it.oem != null && it.bodyWeight != null }
+            .groupBy { it.oem }
+            .mapValues { (_, list) -> list.mapNotNull { it.bodyWeight }.average() }
+            .maxByOrNull { it.value }?.key
+    println("Q1: OEM with the highest average weight: $oemWithHighestAvgWeight")
+
+    // Q2: Phones announced in one year, released in another
+    val mismatchCells = cells.filter {
+        val announced = it.launchAnnounced
+        val release = it.extractReleaseYear()
+        announced != null && release != null && announced != release
+    }
+    println("\nQ2: Phones announced and released in different years: ${mismatchCells.size}")
+    mismatchCells.forEach { println("- ${it.oem} ${it.model} (Announced: ${it.launchAnnounced}, Released: ${it.extractReleaseYear()})") }
+
+    // Q3: Phone with only one censor
+    val singleSensorCells = cells.count{
+        val sensor = it.featSensors?.split(',')?.map { s -> s.trim() }?.filter { it.isNotEmpty() }
+        sensor?.size == 1
+    }
+    println("\nQ3: Number of phones with only one feature sensor: $singleSensorCells")
+
+    // Q4: Year with the most phones launched after 1999
+    val commonYear = cells.mapNotNull { it.launchAnnounced }
+            .filter { it > 1999 }
+            .groupingBy { it }
+            .eachCount()
+            .maxByOrNull { it.value }
+    println("\nQ4: Year with the most phone launches after 1999: ${commonYear?.key} with ${commonYear?.value} launches")
 }
 
 // Reads and processes the CSV file into a list of Cell Object
