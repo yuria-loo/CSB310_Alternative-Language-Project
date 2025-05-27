@@ -1,12 +1,14 @@
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 fun main() {
     val cells = readCSV()
     println("Total phones loaded: ${cells.size}\n")
    
     // Print the first 5 Cell objects
-    cells.take(5).forEachIndexed { index, cell ->
+    cells.take(3).forEachIndexed { index, cell ->
         println("Phone #${index + 1}: $cell")
     }
 
@@ -16,7 +18,16 @@ fun main() {
             .groupBy { it.oem }
             .mapValues { (_, list) -> list.mapNotNull { it.bodyWeight }.average() }
             .maxByOrNull { it.value }?.key
-    println("Q1: OEM with the highest average weight: $oemWithHighestAvgWeight")
+    val oemWithHighestAvg = cells
+            .filter { it.oem != null && it.bodyWeight != null }
+            .groupBy { it.oem }
+            .mapValues { (_, list) -> list.mapNotNull { it.bodyWeight }.average() }
+            .maxByOrNull { it.value }?.value
+
+    val df = DecimalFormat("#.##")
+    df.roundingMode = RoundingMode.CEILING
+    println("Q1: OEM with the highest average weight: $oemWithHighestAvgWeight with " + df.format(oemWithHighestAvg) + "g")
+
 
     // Q2: Phones announced in one year, released in another
     val mismatchCells = cells.filter {
