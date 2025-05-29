@@ -4,14 +4,32 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 
 fun main() {
-    val cells = readCSV()
+    val cells = readCSV("/cells.csv")
     println("Total phones loaded: ${cells.size}\n")
    
-    // Print the first 5 Cell objects
+    // Print the first 3 Cell objects
+    println("Sample outputs")
     cells.take(3).forEachIndexed { index, cell ->
         println("Phone #${index + 1}: $cell")
     }
+    println()
 
+    // Controls the decimal
+    val df = DecimalFormat("#.##")
+    df.roundingMode = RoundingMode.CEILING
+
+    // Function Demo
+    println("Function Demo:")
+    println("Mean Weight: " + df.format(Cell.meanWeight(cells)))
+    println("Median Weight: ${Cell.medianWeight(cells)}")
+    println("Standard Deviation: " + df.format(Cell.stdDevWeight(cells)))
+    // Mode of launch status
+    println("Most Common Launch Status: ${Cell.modeStatus(cells)}")
+    // Unique values for platform OS (pucks 5)
+    println("\nUnique Platforms:")
+    Cell.uniqueValuesFor("platform", cells).take(5).forEach { println(it) }
+
+    println()
     // Q1: OEM with the highest average weight
     val oemWithHighestAvgWeight = cells
             .filter { it.oem != null && it.bodyWeight != null }
@@ -24,8 +42,7 @@ fun main() {
             .mapValues { (_, list) -> list.mapNotNull { it.bodyWeight }.average() }
             .maxByOrNull { it.value }?.value
 
-    val df = DecimalFormat("#.##")
-    df.roundingMode = RoundingMode.CEILING
+
     println("Q1: OEM with the highest average weight: $oemWithHighestAvgWeight with " + df.format(oemWithHighestAvg) + "g")
 
 
@@ -55,12 +72,12 @@ fun main() {
 }
 
 // Reads and processes the CSV file into a list of Cell Object
-fun readCSV(): List<Cell> {
+fun readCSV(fileName: String): List<Cell> {
     val cells = mutableListOf<Cell>()
 
     // Opens CSV file
-    val input = object {}.javaClass.getResourceAsStream("/cells.csv")
-            ?: throw IllegalArgumentException("File not found.")
+    val input = object {}.javaClass.getResourceAsStream(fileName)
+            ?: throw IllegalArgumentException("File not found: $fileName")
 
     val reader = BufferedReader(InputStreamReader(input))
 
@@ -77,5 +94,3 @@ fun readCSV(): List<Cell> {
     // Removes duplicates using toString representation
     return cells.distinctBy { it.toString() }
 }
-
-//

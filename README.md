@@ -43,17 +43,22 @@ I chose Kotlin because:
 ## 📊 Data Analysis Outputs
 
 ### 1. ️ What company (OEM) has the highest average weight of the phone body?
-- **Answer:** 
-
+- **Answer:** HP with 453.61g
 
 ### 2. Were there any phones that were announced in one year and released in another?
-- **Answer:** 
+- **Answer:** 3 results
+  - Motorola One Hyper (Announced: 2019, Released: 2020)
+  - Motorola Razr 2019 (Announced: 2019, Released: 2020)
+  - Xiaomi Redmi K30 5G (Announced: 2019, Released: 2020)
 
 ### 3. How many phones have only one feature sensor?
-- **Answer:** 
+- **Answer:** 419
 
 ### 4. What year had the most phones launched (in years after 1999)?
-- **Answer:** 
+- **Answer:** 2019 with 251 launches
+
+The following is the screenshot of the results:  
+![The result image](/images/results.png)
 
 ---
 

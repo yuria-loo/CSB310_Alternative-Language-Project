@@ -77,8 +77,15 @@ class Cell(data: Array<String>) {
     override fun toString(): String {
         return "Oem: $oem , Model: $model," +
                 "Launch announced: $launchAnnounced, " +
+                "Launch status: $launchStatus, " +
+                "Body Dimensions: $bodyDimensions, " +
                 "Body weight: $bodyWeight g, " +
-                "Display size: $displaySize\""
+                "Body sim: $bodySim, " +
+                "Display Type: $displayType, " +
+                "Display size: $displaySize\" " +
+                "Display resolution: $displayResolution, " +
+                "Feature sensor: $featSensors, " +
+                "Platform OS: $platformOs"
     }
 
     // Static-like methods in companion object
