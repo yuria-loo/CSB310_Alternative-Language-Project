@@ -5,11 +5,11 @@ import java.text.DecimalFormat
 
 fun main() {
     val cells = readCSV("/cells.csv")
-    println("Total phones loaded: ${cells.size}\n")
+    println("\nTotal phones loaded: ${cells.size}\n")
    
     // Print the first 3 Cell objects
     println("Sample outputs")
-    cells.take(3).forEachIndexed { index, cell ->
+    cells.take(5).forEachIndexed { index, cell ->
         println("Phone #${index + 1}: $cell")
     }
     println()
@@ -41,7 +41,6 @@ fun main() {
             .groupBy { it.oem }
             .mapValues { (_, list) -> list.mapNotNull { it.bodyWeight }.average() }
             .maxByOrNull { it.value }?.value
-
 
     println("Q1: OEM with the highest average weight: $oemWithHighestAvgWeight with " + df.format(oemWithHighestAvg) + "g")
 
