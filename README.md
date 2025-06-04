@@ -61,7 +61,13 @@ The following is the screenshot of the results:
 ![The result image](/images/results.png)
 
 ---
+## ✅ Unit Test Result
+The following are the screenshots for the unit test.
 
+![Test cases](/images/unit-test1.png)
+![Test coverage](/images/unit-test2.png)
+
+--- 
 ## 📌 Running the Program
 
 To run the project:
